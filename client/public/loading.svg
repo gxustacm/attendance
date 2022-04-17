@@ -1,0 +1,109 @@
+
+<svg id="eSBvQEAtgbN1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 112 112" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+  <style>
+    <![CDATA[
+    #eSBvQEAtgbN4_to {
+      animation: eSBvQEAtgbN4_to__to 3000ms linear infinite normal forwards
+    }
+
+    @keyframes eSBvQEAtgbN4_to__to {
+      0% {
+        transform: translate(103.5px, 122.499992px)
+      }
+
+      21% {
+        transform: translate(103.5px, 114.499992px)
+      }
+
+      34% {
+        transform: translate(103.5px, 122.499992px)
+      }
+
+      39% {
+        transform: translate(103.5px, 122.499992px)
+      }
+
+      100% {
+        transform: translate(103.5px, 122.499992px)
+      }
+    }
+
+    #eSBvQEAtgbN9_to {
+      animation: eSBvQEAtgbN9_to__to 3000ms linear infinite normal forwards
+    }
+
+    @keyframes eSBvQEAtgbN9_to__to {
+      0% {
+        transform: translate(58.400694px, 35.611815px)
+      }
+
+      20% {
+        transform: translate(58.400694px, 22.611815px)
+      }
+
+      23.666667% {
+        transform: translate(58.400694px, 20.611815px)
+      }
+
+      39% {
+        transform: translate(58.400694px, 35.611815px)
+      }
+
+      100% {
+        transform: translate(58.400694px, 35.611815px)
+      }
+    }
+
+    #eSBvQEAtgbN10_to {
+      animation: eSBvQEAtgbN10_to__to 3000ms linear infinite normal forwards
+    }
+
+    @keyframes eSBvQEAtgbN10_to__to {
+      0% {
+        transform: translate(59.615654px, 24.66186px)
+      }
+
+      20% {
+        transform: translate(59.615654px, 11.66186px)
+      }
+
+      23.666667% {
+        transform: translate(59.615654px, 9.66186px)
+      }
+
+      39% {
+        transform: translate(59.615654px, 24.66186px)
+      }
+
+      100% {
+        transform: translate(59.615654px, 24.66186px)
+      }
+    }
+    ]]>
+  </style>
+  <g>
+    <rect width="112" height="112" rx="0" ry="0" fill="#fef9c3" />
+    <g id="eSBvQEAtgbN4_to" transform="translate(103.5,122.499992)">
+      <g transform="translate(-103.5,-122.499992)">
+        <path
+          d="M57.4486,37.9912C38.7446,33.862,25,43.1171,25,56.7861C25,71.8221,44.034,79.6015,54,81.5c2.3616,12.1977,7.076,40.556,3.4486,57.3-3.6275,16.745,3.4951,51.402,7.5099,66.637C79.9783,206.291,112.342,208,121.637,208c11.619,0,24.797-12.815,29.473-12.245c3.741.455,22.152-3.892,30.89-6.123-10.155-1.519-30.55-8.828-30.89-25.914-.425-21.358-43.642-45.848-50.161-48.838-6.5176-2.991-11.1936-32.6068-12.6106-45.2791-1.4169-12.6724-12.1859-27.4805-30.8898-31.6097Z"
+          fill="#a7f3d0" stroke="#064e3b" stroke-width="3" />
+        <path d="M54,81.5c4.5,1,8.5,0,10.5-1" fill="none" stroke="#059669" stroke-width="3" stroke-opacity="0.5"
+          stroke-linecap="round" />
+        <path d="M51,58l-8-3" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
+        <path d="M33,50.5L28,48" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
+      </g>
+    </g>
+    <g id="eSBvQEAtgbN9_to" transform="translate(58.400694,35.611815)">
+      <path
+        d="M57.2623,42.5388c3.0633.3495,6.0943.0311,8.5094-1.3287c2.4906-1.4024,4.1559-3.8201,4.5468-7.2465.391-3.4264-.6869-6.1571-2.7976-8.0845-2.0467-1.8689-4.9281-2.8619-7.9914-3.2114-3.1179-.3557-6.1589.112-8.5583,1.531-2.4455,1.4462-4.1317,3.8338-4.498,7.0442-.3663,3.2105.7387,5.9165,2.7956,7.8765c2.0181,1.923,4.8756,3.0637,7.9935,3.4194Z"
+        transform="translate(-58.400694,-32.611815)" fill="#ffb26b" stroke="#e17d21" stroke-width="3" />
+    </g>
+    <g id="eSBvQEAtgbN10_to" transform="translate(59.615654,24.66186)">
+      <path
+        d="M57.3395,18.8952l5.7556.6567c1.2304,1.1394,3.1733,3.3592,1.1013,3.1228-2.59-.2955-1.8102,3.0903-3.0466,1.1509-1.2363-1.9393-3.2668.5264-4.3166-.4925-.8399-.8151-2.156-1.5447-2.709-1.8076l3.2153-2.6303Z"
+        transform="translate(-59.615654,-21.66186)" fill="#53b356" />
+    </g>
+  </g>
+</svg>

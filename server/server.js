@@ -1,0 +1,55 @@
+import express from 'express'
+import cookies from 'cookie-parser'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import mysql from 'mysql'
+
+const app = express()
+app.use(cookies())
+app.use(cors())
+dotenv.config()
+
+const connection = mysql.createConnection({
+  host: process.env.SQL_HOST,
+  user: process.env.SQL_USER,
+  password: process.env.SQL_PWD,
+  database: process.env.SQL_NAME
+})
+
+connection.connect((err) => {
+  if (err) {
+      console.log('\x1B[31m[Erro] \x1B[0m%s', err.code)
+      console.log('[Info] Program will be exit, please check the DB configuration')
+      process.exit(0)
+  }
+
+  else {
+      console.log('[Info] DB Connection Established')
+  }
+})
+
+const verifyTracker = (Tracker) => {
+  var promise = new Promise((resolve, reject) => {
+
+  })
+}
+
+app.get('/api/user', (req, res) => {
+  if (req.cookies['TrackerID'] !== undefined &&
+    req.cookies['TrackerToken'] !== undefined) {
+    var Tracker = {
+      id: req.cookies['TrackerID'],
+      token: req.cookies['TrackerToken']
+    }
+
+  }
+  else {
+    res.json({
+      ok: false
+    })
+  }
+})
+
+app.listen(1333, () => {
+  console.log('[Info] Server started')
+})
