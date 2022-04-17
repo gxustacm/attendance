@@ -28,9 +28,59 @@ connection.connect((err) => {
   }
 })
 
+const base62 = (id) => {
+  var arr = '0123456789qwertyuiopasdfghjklzxcvbnmMNBVCXZLKJHGFDSAPOIUYTREWQ'
+  var res = ''
+  while (id > 0)
+  {
+      res = arr.substring(id % 62, id % 62 + 1) + res
+      id = Math.floor(id / 62)
+  }
+  return res
+}
+
 const verifyTracker = (Tracker) => {
   var promise = new Promise((resolve, reject) => {
+    connection.query('select `name`, `email` form `users` where `uid` = (select `uid` from `trackers` where id = ? and token = ?)', queryParams, (err, rows) => {
+      if (rows[0] === undefined) {
+        resolve({
+          ok: false
+        })
+      }
+      else {
+        resolve({
+          ok: true,
+          name: rows[0].name,
+          email: rows[0].email
+        })
+      }
+    })
+  })
 
+  return promise
+}
+
+const genTracker = (uid) => {
+  var promise = new Promise((resolove, reject) => {
+    const deleteParams = [uid]
+    connection.query('delete from `trackers` where `uid` = ?', deleteParams, (err) => {
+      if (err) {
+        reject(err)
+        throw err
+      }
+      var Tracker = {
+        id: 'T-' + base62(parseInt(now.getTime() / 1000 + now.getTime() % 1000)),
+        token: 'T-' + base62(parseInt(now.getTime() / 10 + now.getTime() % 1000))
+      }
+      insertParams = [uid, Tracker.id, Tracker.token]
+      connection.query('insert into `trackers` (`uid`, `id`, `token`) values (?, ?, ?)', insertParams, (err) => {
+        if (err) {
+          reject(err)
+          throw err
+        }
+        resolve(Tracker)
+      })
+    })
   })
 }
 
