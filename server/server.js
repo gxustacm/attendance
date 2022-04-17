@@ -3,10 +3,13 @@ import cookies from 'cookie-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import mysql from 'mysql'
+import bodyParser from 'body-parser'
 
 const app = express()
 app.use(cookies())
 app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json({ extended: true }))
 dotenv.config()
 
 const connection = mysql.createConnection({
@@ -65,7 +68,7 @@ const genTracker = (uid) => {
     const deleteParams = [uid]
     connection.query('delete from `trackers` where `uid` = ?', deleteParams, (err) => {
       if (err) {
-        reject(err)
+        reject(undefined)
         throw err
       }
       var Tracker = {
@@ -75,7 +78,7 @@ const genTracker = (uid) => {
       insertParams = [uid, Tracker.id, Tracker.token]
       connection.query('insert into `trackers` (`uid`, `id`, `token`) values (?, ?, ?)', insertParams, (err) => {
         if (err) {
-          reject(err)
+          reject(undefined)
           throw err
         }
         resolve(Tracker)
@@ -84,14 +87,30 @@ const genTracker = (uid) => {
   })
 }
 
-app.get('/api/user', (req, res) => {
+app.post('/api/login', (req, res) => {
+  
+})
+
+app.get('/api/user', async (req, res) => {
   if (req.cookies['TrackerID'] !== undefined &&
     req.cookies['TrackerToken'] !== undefined) {
     var Tracker = {
       id: req.cookies['TrackerID'],
       token: req.cookies['TrackerToken']
     }
-
+    var response = await verifyTracker(Tracker)
+    if (response.ok) {
+      res.json({
+        ok: true,
+        name: response.name,
+        email: response.email
+      })
+    }
+    else {
+      res.json({
+        ok: false
+      })
+    }
   }
   else {
     res.json({

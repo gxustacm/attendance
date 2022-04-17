@@ -9,6 +9,7 @@ const LoadingPage = () => {
         sx={{
           width: '80vw',
           margin: 'auto',
+          position: 'fixed',
           left: '0',
           right: '0',
           textAlign: 'center',
