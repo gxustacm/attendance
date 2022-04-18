@@ -1,5 +1,5 @@
 import React from 'react'
-import { LinearProgress, Box, Avatar } from '@mui/material'
+import { LinearProgress, Box, Avatar, Typography } from '@mui/material'
 
 const LoadingPage = () => {
   return (
@@ -13,7 +13,7 @@ const LoadingPage = () => {
           left: '0',
           right: '0',
           textAlign: 'center',
-          marginTop: 'calc(50vh - 96px)'
+          marginTop: 'calc(50vh - 120px)'
         }}
       >
         <Avatar
@@ -26,6 +26,15 @@ const LoadingPage = () => {
           }}
           src='loading.svg'
         />
+        <Typography
+          variant='h6'
+          sx={{
+            padding: '20px 20px 20px 20px',
+            fontFamily: 'Roboto, sans-serif'
+          }}
+        >
+          Loading
+        </Typography>
       </Box>
     </>
   )

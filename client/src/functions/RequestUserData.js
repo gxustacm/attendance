@@ -1,14 +1,16 @@
-const requestUserData = (setUserLogin, setUserInfo) => {
+const requestUserData = (callback) => {
   fetch('api/user')
     .then((response) => response.json())
     .then((data) => {
-      setUserInfo(data.stat)
-      if (!data.stat) {
-        setUserInfo({
+      if (data.ok) {
+        callback(true, {
           uid: data.uid,
           uname: data.uname,
           avatar: data.avatar
         })
+      }
+      else {
+        callback(false)
       }
     })
     .catch((err) => {

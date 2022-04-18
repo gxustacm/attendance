@@ -3,9 +3,12 @@ import cookies from 'cookie-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import mysql from 'mysql'
+import crypto from 'crypto'
 import bodyParser from 'body-parser'
+import compression from 'compression'
 
 const app = express()
+app.use(compression())
 app.use(cookies())
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -88,7 +91,10 @@ const genTracker = (uid) => {
 }
 
 app.post('/api/login', (req, res) => {
-  
+  const md5 = crypto.createHash('md5')
+  var pwd =  md5.update(req.body.pwd).digest('hex').toUpperCase()
+  const queryParams = [req.body.name, pwd]
+  connection.query('select count(*) from `users` where `name` = ? and pwd = ?')
 })
 
 app.get('/api/user', async (req, res) => {
