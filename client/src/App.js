@@ -32,6 +32,11 @@ function App() {
 
   return (
     <>
+      <Box
+        className={boxClass}
+      >
+        <LoadingPage />
+      </Box>
       {
         !isLoading && (
           <>
@@ -39,17 +44,14 @@ function App() {
               isLoggedIn ? (
                 <UserPage />
               ) : (
-                <LoginPage />
+                <LoginPage
+                  setLogin={setLogin}
+                />
               )
             }
           </>
         )
       }
-      <Box
-        className={boxClass}
-      >
-        <LoadingPage />
-      </Box>
     </>
   )
 }

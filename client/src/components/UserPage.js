@@ -1,7 +1,187 @@
+import React from 'react'
+import { useEffect } from 'react'
+import { Box, BottomNavigation, BottomNavigationAction, Snackbar, Alert, Typography, Button } from '@mui/material'
+import { Attribution, Restore } from '@mui/icons-material'
+import webSocket from 'socket.io-client'
+import cookie from 'react-cookies'
+
 const UserPage = () => {
+  const [ws, setWs] = React.useState(null)
+  const [requestSent, setReqStat] = React.useState(false)
+  const [page, setPage] = React.useState(0)
+  const [showMsg, setMsg] = React.useState(false)
+  const [duplicated, setDuplicated] = React.useState(false)
+  const [disconnectMsg, setDisconnectMsg] = React.useState(false)
+  const [disconnected, setDisconnected] = React.useState(false)
+  const [dura, setDura] = React.useState(0)
+
+  const connectWs = () => {
+    setWs(webSocket('/'))
+  }
+
+  const initWebSocket = () => {
+    ws.on('stat', (msg) => {
+      if (msg === 'success') {
+        setMsg(true)
+        const timeStart = Date.parse(new Date())
+        setInterval(() => {
+          setDura(parseInt((Date.parse(new Date()) - timeStart) / 1000))
+        }, 1000)
+      }
+      if (msg === 'duplicated') {
+        setMsg(true)
+        setDuplicated(true)
+        ws.disconnect()
+      }
+    })
+
+    ws.on('disconnect', () => {
+      setDisconnected(true)
+      setDisconnectMsg(true)
+    })
+  }
+
+  const sleep = (time) => {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  useEffect(() => {
+    const connect = async () => {
+      if (ws && !duplicated) {
+        initWebSocket()
+        await sleep(500)
+        var Tracker = {
+          id: cookie.load('tracker-id'),
+          token: cookie.load('tracker-token')
+        }
+        ws.emit('sign in', JSON.stringify(Tracker))
+      }
+    }
+    connect()
+  }, [ws])
+
+  if (!requestSent) {
+    setReqStat(true)
+    connectWs()
+  }
+
+  const handleReconnect = () => {
+    window.location.reload()
+  }
+
+  const format = (time) => {
+    var h = parseInt(time / 3600)
+    var m = parseInt((time % 3600) / 60)
+    var s = parseInt(time % 60)
+    return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s)
+  }
+
   return (
     <>
-      now you r logged in
+      {
+        page === 0 && (
+          <Box
+            sx={{
+              position: 'fixed',
+              margin: 'auto',
+              left: '0',
+              right: '0',
+              marginTop: 'calc(50vh - 150px)',
+              textAlign: 'center'
+            }}
+          >
+            {disconnected ? (
+              <>
+                <Typography
+                  variant='h1'
+                  sx={{
+                    color: 'red'
+                  }}
+                >
+                  Disconnected
+                </Typography>
+                <Box 
+                  sx={{
+                    padding: '20px 0 0 0'
+                  }}
+                />
+                <Button
+                  variant='outlined'
+                  onClick={handleReconnect}
+                >
+                  重新连接
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant='h1'
+                >
+                  {format(dura)}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'green'
+                  }}
+                >
+                  Online
+                </Typography>
+              </>
+            )}
+          </Box>
+        )
+      }
+      <Box
+        sx={{
+          position: 'fixed',
+          left: '0',
+          right: '0',
+          bottom: '40px'
+        }}
+      >
+        <BottomNavigation
+          showLabels
+          value={page}
+          onChange={(e, v) => {
+            setPage(v)
+          }}
+        >
+          <BottomNavigationAction
+            label='计时器'
+            icon={<Restore />}
+          />
+          <BottomNavigationAction
+            label='我的'
+            icon={<Attribution />}
+          />
+        </BottomNavigation>
+      </Box>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={showMsg}
+        onClose={() => setMsg(false)}
+        autoHideDuration={2000}
+      >
+        <Alert
+          severity={
+            duplicated ? 'warning' : 'success'
+          }
+        >
+          {duplicated ? '连接已关闭，请勿打开多个窗口' : '已建立连接'}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={disconnectMsg && !duplicated}
+        onClose={() => setDisconnectMsg(false)}
+        autoHideDuration={2000}
+      >
+        <Alert
+          severity='error'
+        >
+          连接意外关闭，请检查网络
+        </Alert>
+      </Snackbar>
     </>
   )
 }
