@@ -50,7 +50,7 @@ var weekCmd = &cobra.Command{
 		fmt.Printf("%-15sduration\n", "realname")
 		for i, v := range res {
 			printRune(uidMp[i], 15)
-			fmt.Printf("%.dh%dm\n", v.Milliseconds()/1000/60/60/60, v.Milliseconds()/1000/60/60%60)
+			fmt.Printf("%dh%dm\n", v.Milliseconds()/1000/60/60, v.Milliseconds()/1000/60/60%60)
 		}
 	},
 }
