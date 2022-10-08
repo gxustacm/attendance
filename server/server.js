@@ -212,10 +212,17 @@ const setUserList = () => {
 }
 
 app.get('/api/userinfo/:id', (req, res) => {
-  res.json({
-    uid: req.params.id,
-    isOnline: clients.has(parseInt(req.params.id))
-  })
+  if (req.params.id === 'queryAll') {
+    let keys = clients.keys()
+    res.json({
+      online: [...keys]
+    })
+  } else {
+    res.json({
+      uid: req.params.id,
+      isOnline: clients.has(parseInt(req.params.id))
+    })
+  }
 })
 
 app.post('/api/login', (req, res) => {
