@@ -58,6 +58,7 @@ const verifyTracker = (Tracker) => {
           })
         }
       })
+      connection.release()
     })
   })
 
@@ -88,6 +89,7 @@ const genTracker = (uid) => {
           resolve(Tracker)
         })
       })
+      connection.release()
     })
   })
 
@@ -123,6 +125,7 @@ io.on('connection', (socket) => {
           socket.emit('invite code stat', 'invalid')
         }
       })
+      connection.release()
     })
   })
 
@@ -169,6 +172,7 @@ io.on('connection', (socket) => {
         console.log('[Info] user with uid: ' + uid + ' has been disconnected')
         clients.delete(uid)
       }
+      connection.release()
     })
   })
 })
@@ -230,6 +234,7 @@ const setUserList = () => {
         userList[rows[key].name] = rows[key].email
       }
     })
+    connection.release()
   })
 }
 
@@ -277,6 +282,7 @@ app.post('/api/login', (req, res) => {
         res.json({ ok: false })
       }
     })
+    connection.release()
   })
 })
 
@@ -327,6 +333,7 @@ app.post('/api/register', (req, res) => {
         }
       })
     })
+    connection.release()
   })
 })
 

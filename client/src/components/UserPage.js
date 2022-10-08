@@ -38,6 +38,15 @@ const UserPage = () => {
     ws.on('disconnect', () => {
       setDisconnected(true)
       setDisconnectMsg(true)
+      if (Notification.permission === "granted") {
+        let notification = new Notification("连接已断开...")
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            let notification = new Notification("已接受消息通知")
+          }
+        })
+      }
     })
   }
 
@@ -74,6 +83,7 @@ const UserPage = () => {
     var m = parseInt((time % 3600) / 60)
     var s = parseInt(time % 60)
     return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s)
+    // return Date.parse(new Date())
   }
 
   return (
