@@ -20,10 +20,10 @@ app.use(bodyParser.json({ extended: 'true' }))
 const server = http.createServer(app)
 const io = new Server(server, { cors: true })
 
-var userList = {}
+let userList = {}
 
-var onRegister = new Map()
-var clients = new Map()
+let onRegister = new Map()
+let clients = new Map()
 
 const encrypt = (str) => {
   const md5 = crypto.createHash('md5')
@@ -211,6 +211,13 @@ const setUserList = () => {
   })
 }
 
+app.get('/api/userinfo/:id', (req, res) => {
+  res.json({
+    uid: req.params.id,
+    isOnline: clients.has(parseInt(req.params.id))
+  })
+})
+
 app.post('/api/login', (req, res) => {
   var pwd = encrypt(req.body.pwd)
   const queryParams = [req.body.name, pwd]
@@ -315,6 +322,6 @@ app.get('/api/user', async (req, res) => {
   }
 })
 
-server.listen(1333, () => {
+server.listen(1334, () => {
   console.log('[Info] Server started')
 })
