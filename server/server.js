@@ -289,7 +289,7 @@ app.post('/api/register', (req, res) => {
     var inviteCode = req.body.inviteCode
     var realName = req.body.realName
     var queryParams = [inviteCode]
-    connection.query('select `rule` from `codes` where `code` = ?', queryParams, (err, rows) => {
+    connection.query('select `role` from `codes` where `code` = ?', queryParams, (err, rows) => {
       if (err) {
         res.json({
           ok: false
@@ -297,6 +297,7 @@ app.post('/api/register', (req, res) => {
         throw err
       }
       queryParams = [name]
+      let role = rows[0].role
       connection.query('select count(*) from `users` where `name` = ?', queryParams, (err, rows) => {
         if (err) {
           res.json({
@@ -305,8 +306,8 @@ app.post('/api/register', (req, res) => {
           throw err
         }
         if (!rows[0]['count(*)']) {
-          queryParams = [name, encrypt(pwd), email, rows[0].rule, realName]
-          connection.query('insert into `users` (`name`, `pwd`, `email`, `rule`, `realname`) values (?, ?, ?, ?, ?)', queryParams, (err) => {
+          queryParams = [name, encrypt(pwd), email, role, realName]
+          connection.query('insert into `users` (`name`, `pwd`, `email`, `role`, `realname`) values (?, ?, ?, ?, ?)', queryParams, (err) => {
             if (err) {
               res.json({
                 ok: false
