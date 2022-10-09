@@ -6,7 +6,7 @@ import webSocket from 'socket.io-client'
 import cookie from 'react-cookies'
 import UserInfoPage from './UserInfoPage'
 
-const UserPage = () => {
+const UserPage = (props) => {
   const [ws, setWs] = React.useState(null)
   const [requestSent, setReqStat] = React.useState(false)
   const [page, setPage] = React.useState(0)
@@ -16,7 +16,11 @@ const UserPage = () => {
   const [disconnected, setDisconnected] = React.useState(false)
   const [dura, setDura] = React.useState(0)
   const [onlineData, setOnlineData] = React.useState([])
-  const [user, setUser] = React.useState({})
+  const [user, setUser] = React.useState({
+    avatar: '',
+    uid: '',
+    uname: ''
+  })
 
   const connectWs = () => {
     if (process.env.NODE_ENV === 'development')
@@ -33,6 +37,7 @@ const UserPage = () => {
       if (msg === 'success') {
         setMsg(true)
         const timeStart = Date.parse(new Date())
+        ws.emit('queryOnlineData', { year: date.getFullYear() })
         setInterval(() => {
           setDura(parseInt((Date.parse(new Date()) - timeStart) / 1000))
         }, 1000)
@@ -46,6 +51,7 @@ const UserPage = () => {
 
     ws.on('onlineData', msg => {
       setOnlineData(msg)
+      props.setLoading(false)
     })
 
     ws.on('userInfo', msg => {
@@ -106,7 +112,13 @@ const UserPage = () => {
   return (
     <>
       {
-        page === 0 && (
+        page === 0 && <UserInfoPage
+          onlineData={onlineData}
+          user={user}
+        />
+      }
+      {
+        page === 1 && (
           <Box
             sx={{
               position: 'fixed',
@@ -127,7 +139,7 @@ const UserPage = () => {
                 >
                   Disconnected
                 </Typography>
-                <Box 
+                <Box
                   sx={{
                     padding: '20px 0 0 0'
                   }}
@@ -158,12 +170,6 @@ const UserPage = () => {
           </Box>
         )
       }
-      {
-        page === 1 && <UserInfoPage
-          onlineData={onlineData}
-          user={user}
-        />
-      }
       <Box
         sx={{
           position: 'fixed',
@@ -177,18 +183,15 @@ const UserPage = () => {
           value={page}
           onChange={(e, v) => {
             setPage(v)
-            if (v === 1) {
-              ws.emit('queryOnlineData', { year: date.getFullYear() })
-            }
           }}
         >
           <BottomNavigationAction
-            label='计时器'
-            icon={<Restore />}
-          />
-          <BottomNavigationAction
             label='我的'
             icon={<Attribution />}
+          />
+          <BottomNavigationAction
+            label='计时器'
+            icon={<Restore />}
           />
         </BottomNavigation>
       </Box>

@@ -1,5 +1,5 @@
 import React from "react"
-import { ResponsiveCalendar } from '@nivo/calendar'
+import { Calendar } from '@nivo/calendar'
 import { Avatar, IconButton, Typography } from "@mui/material"
 
 const UserInfoPage = (props) => {
@@ -52,8 +52,8 @@ const UserInfoPage = (props) => {
 
     return (
         <div style={{
-            width: '60vw',
-            margin: '0 auto'
+            margin: '0 auto',
+            width: '900px'
         }}>
             <div style={{
                 marginTop: '100px',
@@ -82,33 +82,36 @@ const UserInfoPage = (props) => {
                     Hello {props.user.uname},
                 </Typography>
             </div>
-            <div style={{
-                height: '20vh',
-                margin: '40px'
-            }}>
-                <ResponsiveCalendar
+            <div 
+                style={{
+                    margin: '40px',
+                    backgroundColor: '#fff',
+                    boxShadow: '5px 5px 20px 1px #eee',
+                    borderRadius: '3px',
+                    padding: '10px 30px 20px 30px'
+                }}
+            >
+                <Typography
+                    variant='h5'
+                    sx={{
+                        margin: '20px 0'
+                    }}
+                >
+                    历史在线
+                </Typography>
+                <Calendar
+                    height={140}
+                    width={750}
                     data={data}
                     tooltip={getTooltip}
                     from={`${date.getFullYear()}-01-01`}
                     to={`${date.getFullYear()}-12-31`}
                     emptyColor="#eeeeee"
                     colors={['#61cdbb', '#97e3d5', '#e8c1a0', '#f47560']}
-                    margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+                    margin={{ top: 0, right: 40, bottom: 0, left: 40 }}
                     monthBorderColor="#ffffff"
                     dayBorderWidth={2}
                     dayBorderColor="#ffffff"
-                    legends={[
-                        {
-                            anchor: 'bottom-right',
-                            direction: 'row',
-                            translateY: 36,
-                            itemCount: 4,
-                            itemWidth: 42,
-                            itemHeight: 36,
-                            itemsSpacing: 14,
-                            itemDirection: 'right-to-left'
-                        }
-                    ]}
                 />
             </div>
         </div>

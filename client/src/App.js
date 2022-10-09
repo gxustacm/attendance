@@ -25,8 +25,9 @@ function App() {
       setLogin(stat)
       if (stat) {
         setUserInfo(userData)
+      } else {
+        setLoading(false)
       }
-      setLoading(false)
     })
   }
 
@@ -51,7 +52,7 @@ function App() {
           opacity: 0.5
         }}
       >
-        build #221009 {process.env.NODE_ENV === 'development' ? 'development' : 'production' } 
+        build #221009@1 {process.env.NODE_ENV === 'development' ? 'development' : 'production' } 
       </div>
       <Box
         className={boxClass}
@@ -59,11 +60,13 @@ function App() {
         <LoadingPage />
       </Box>
       {
-        !isLoading && (
+        true && (
           <>
             {
               isLoggedIn ? (
-                <UserPage />
+                <UserPage
+                  setLoading={setLoading}
+                />
               ) : (
                 <LoginPage
                   setLogin={setLogin}

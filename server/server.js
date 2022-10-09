@@ -156,6 +156,7 @@ io.on('connection', (socket) => {
               avatar: encrypt(rows[0].email)
             })
           })
+          connection.release()
         })
         console.log('[Info] user with uid: ' + uid + ' has connected')
       }

@@ -3,15 +3,22 @@ import { LinearProgress, Box, Avatar, Typography } from '@mui/material'
 
 const LoadingPage = () => {
   return (
-    <>
+    <div
+      style={{
+        backgroundColor: '#fff',
+        width: '100vw',
+        height: '100vh',
+        position: 'fixed',
+        left: '0',
+        top: '0',
+        zIndex: 999
+      }}
+    >
       <LinearProgress />
       <Box
         sx={{
           width: '80vw',
           margin: 'auto',
-          position: 'fixed',
-          left: '0',
-          right: '0',
           textAlign: 'center',
           marginTop: 'calc(50vh - 120px)'
         }}
@@ -36,7 +43,7 @@ const LoadingPage = () => {
           Loading
         </Typography>
       </Box>
-    </>
+    </div>
   )
 }
 
