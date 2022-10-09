@@ -4,6 +4,7 @@ import { Box, BottomNavigation, BottomNavigationAction, Snackbar, Alert, Typogra
 import { Attribution, Restore } from '@mui/icons-material'
 import webSocket from 'socket.io-client'
 import cookie from 'react-cookies'
+import UserInfoPage from './UserInfoPage'
 
 const UserPage = () => {
   const [ws, setWs] = React.useState(null)
@@ -14,13 +15,21 @@ const UserPage = () => {
   const [disconnectMsg, setDisconnectMsg] = React.useState(false)
   const [disconnected, setDisconnected] = React.useState(false)
   const [dura, setDura] = React.useState(0)
+  const [onlineData, setOnlineData] = React.useState([])
+  const [user, setUser] = React.useState({})
 
   const connectWs = () => {
-    setWs(webSocket('/'))
+    if (process.env.NODE_ENV === 'development')
+      setWs(webSocket('https://check.ixnet.icu/'))
+    else
+      setWs(webSocket('/'))
   }
 
+  const date = new Date()
+  //const weekStart = parseInt(date.getTime() / (24 * 60 * 60 * 1000) - date.getDay()) * 24 * 60 * 60 * 1000
+
   const initWebSocket = () => {
-    ws.on('stat', (msg) => {
+    ws.on('stat', msg => {
       if (msg === 'success') {
         setMsg(true)
         const timeStart = Date.parse(new Date())
@@ -33,6 +42,14 @@ const UserPage = () => {
         setDuplicated(true)
         ws.disconnect()
       }
+    })
+
+    ws.on('onlineData', msg => {
+      setOnlineData(msg)
+    })
+
+    ws.on('userInfo', msg => {
+      setUser(msg)
     })
 
     ws.on('disconnect', () => {
@@ -141,6 +158,12 @@ const UserPage = () => {
           </Box>
         )
       }
+      {
+        page === 1 && <UserInfoPage
+          onlineData={onlineData}
+          user={user}
+        />
+      }
       <Box
         sx={{
           position: 'fixed',
@@ -154,6 +177,9 @@ const UserPage = () => {
           value={page}
           onChange={(e, v) => {
             setPage(v)
+            if (v === 1) {
+              ws.emit('queryOnlineData', { year: date.getFullYear() })
+            }
           }}
         >
           <BottomNavigationAction

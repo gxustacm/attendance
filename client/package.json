@@ -7,6 +7,9 @@
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.6.1",
+    "@nivo/calendar": "^0.80.0",
+    "@nivo/colors": "^0.80.0",
+    "@nivo/core": "^0.80.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
@@ -17,7 +20,7 @@
     "socket.io-client": "^4.5.0",
     "web-vitals": "^2.1.4"
   },
-  "proxy": "http://localhost:1333",
+  "proxy": "https://check.ixnet.icu",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

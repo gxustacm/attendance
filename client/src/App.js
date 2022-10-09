@@ -42,6 +42,17 @@ function App() {
 
   return (
     <>
+      <div
+        style={{
+          position: 'fixed',
+          top: '50px',
+          right: '50px',
+          fontSize: '10px',
+          opacity: 0.5
+        }}
+      >
+        build #221009 {process.env.NODE_ENV === 'development' ? 'development' : 'production' } 
+      </div>
       <Box
         className={boxClass}
       >

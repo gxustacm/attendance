@@ -14,7 +14,10 @@ const LoginPage = (hooks) => {
   const [user, setUser] = React.useState('')
 
   const connectWs = () => {
-    setWs(webSocket('/'))
+    if (process.env.NODE_ENV === 'development')
+      setWs(webSocket('https://check.ixnet.icu/'))
+    else
+      setWs(webSocket('/'))
   }
 
   const initWebSocket = () => {
@@ -69,7 +72,7 @@ const LoginPage = (hooks) => {
   }
 
   const handleLogin = () => {
-    fetch('/api/login', {
+    fetch('api/login', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

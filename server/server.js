@@ -31,8 +31,8 @@ const encrypt = (str) => {
 }
 
 const base62 = (id) => {
-  var arr = '0123456789qwertyuiopasdfghjklzxcvbnmMNBVCXZLKJHGFDSAPOIUYTREWQ'
-  var res = ''
+  let arr = '0123456789qwertyuiopasdfghjklzxcvbnmMNBVCXZLKJHGFDSAPOIUYTREWQ'
+  let res = ''
   while (id > 0) {
     res = arr.substring(id % 62, id % 62 + 1) + res
     id = Math.floor(id / 62)
@@ -41,7 +41,7 @@ const base62 = (id) => {
 }
 
 const verifyTracker = (Tracker) => {
-  var promise = new Promise((resolve, reject) => {
+  let promise = new Promise((resolve, reject) => {
     connectionPool.getConnection((err, connection) => {
       if (err) throw err
       const queryParams = [Tracker.id, Tracker.token]
@@ -66,7 +66,7 @@ const verifyTracker = (Tracker) => {
 }
 
 const genTracker = (uid) => {
-  var promise = new Promise((resolve, reject) => {
+  let promise = new Promise((resolve, reject) => {
     connectionPool.getConnection((err, connection) => {
       if (err) throw err
       const deleteParams = [uid]
@@ -75,12 +75,12 @@ const genTracker = (uid) => {
           reject(undefined)
           throw err
         }
-        var now = new Date()
-        var Tracker = {
+        let now = new Date()
+        let Tracker = {
           id: 'T-' + base62(parseInt(now.getTime() / 1000 + now.getTime() % 1000)),
           token: 'T-' + base62(parseInt(now.getTime() / 10 + now.getTime() % 1000))
         }
-        var insertParams = [uid, Tracker.id, Tracker.token]
+        let insertParams = [uid, Tracker.id, Tracker.token]
         connection.query('insert into `trackers` (`uid`, `id`, `token`) values (?, ?, ?)', insertParams, (err) => {
           if (err) {
             reject(undefined)
@@ -97,14 +97,13 @@ const genTracker = (uid) => {
 }
 
 io.on('connection', (socket) => {
-  var uid = null
-  var startTime = null
+  let uid = null
+  let startTime = null
 
   socket.on('getUser', (msg) => {
     if (msg in userList) {
       socket.emit('matched', encrypt(userList[msg]))
-    }
-    else {
+    } else {
       socket.emit('matched', 'nomatch')
     }
   })
@@ -136,7 +135,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('sign in', async (msg) => {
-    var stat = await verifyTracker(JSON.parse(msg))
+    let stat = await verifyTracker(JSON.parse(msg))
     if (stat.ok) {
       if (clients.has(stat.uid)) {
         socket.emit('stat', 'duplicated')
@@ -146,9 +145,19 @@ io.on('connection', (socket) => {
         startTime = new Date()
         // startTime = now.getTime()
         clients.set(stat.uid, socket)
-        socket.emit('stat', 'success')
+        connectionPool.getConnection((err, connection) => {
+          if (err) throw err
+          connection.query('select `name`, `email` from `users` where `uid` = ?', [uid], (err, rows) => {
+            if (err) throw err
+            socket.emit('stat', 'success')
+            socket.emit('userInfo', {
+              uid: uid,
+              uname: rows[0].name,
+              avatar: encrypt(rows[0].email)
+            })
+          })
+        })
         console.log('[Info] user with uid: ' + uid + ' has connected')
-        // @TODO
       }
     }
     else {
@@ -156,13 +165,45 @@ io.on('connection', (socket) => {
     }
   })
 
+  socket.on('queryOnlineData', async (msg) => {
+    connectionPool.getConnection((err, connection) => {
+      if (err) throw err
+      if (uid !== null) {
+        let year = msg.year
+        let queryParams = [uid, new Date(`${year}-01-01`), new Date(`${year + 1}-01-01`)]
+        connection.query('select * from `statistics` where `uid` = ? and `start` >= ? and `start` < ?', queryParams, (err, rows) => {
+          let tmp = {}
+          const format = (s) => {
+            if (s < 10) {
+              return '0' + s
+            }
+            return s
+          }
+          for (let key in rows) {
+            let date = new Date(rows[key].start)
+            let parsedDate = `${date.getFullYear()}-${format(date.getMonth())}-${format(date.getDate())}`
+            if (parsedDate in tmp) {
+              tmp[parsedDate] += ((new Date(rows[key].end)) - date.getTime()) / 1000 / 60 / 60
+            } else {
+              tmp[parsedDate] = ((new Date(rows[key].end)) - date.getTime()) / 1000 / 60 / 60
+            }
+          }
+          socket.emit('onlineData', tmp)
+        })
+      } else {
+        socket.emit('onlineData', 'access denined')
+      }
+      connection.release()
+    })
+  })
+
   socket.on('disconnect', () => {
     connectionPool.getConnection((err, connection) => {
       if (err) throw err
       if (uid !== null) {
-        var now = new Date()
+        let now = new Date()
         const insertParams = [uid, startTime, now]
-        if (now - startTime >= 5 * 60 * 1000) {
+        if (now - startTime >= 60 * 1000) {
           connection.query('insert into `statistics` (`uid`, `start`, `end`) values (?, ?, ?)', insertParams, (err) => {
             if (err) {
               throw err
@@ -230,7 +271,7 @@ const setUserList = () => {
   connectionPool.getConnection((err, connection) => {
     if (err) throw err
     connection.query('select `name`, `email` from `users`', (err, rows) => {
-      for (var key in rows) {
+      for (let key in rows) {
         userList[rows[key].name] = rows[key].email
       }
     })
@@ -255,7 +296,7 @@ app.get('/api/userinfo/:id', (req, res) => {
 app.post('/api/login', (req, res) => {
   connectionPool.getConnection((err, connection) => {
     if (err) throw err
-    var pwd = encrypt(req.body.pwd)
+    let pwd = encrypt(req.body.pwd)
     const queryParams = [req.body.name, pwd]
     connection.query('select count(*), `uid` from `users` where `name` = ? and pwd = ?', queryParams, async (err, rows) => {
       if (err) {
@@ -264,7 +305,7 @@ app.post('/api/login', (req, res) => {
       }
       if (rows[0]['count(*)']) {
         try {
-          var Tracker = await genTracker(rows[0].uid)
+          let Tracker = await genTracker(rows[0].uid)
           res.cookie('tracker-id', Tracker.id)
           res.cookie('tracker-token', Tracker.token)
           res.json({
@@ -289,12 +330,12 @@ app.post('/api/login', (req, res) => {
 app.post('/api/register', (req, res) => {
   connectionPool.getConnection((err, connection) => {
     if (err) throw err
-    var name = req.body.name
-    var pwd = req.body.pwd
-    var email = req.body.email
-    var inviteCode = req.body.inviteCode
-    var realName = req.body.realName
-    var queryParams = [inviteCode]
+    let name = req.body.name
+    let pwd = req.body.pwd
+    let email = req.body.email
+    let inviteCode = req.body.inviteCode
+    let realName = req.body.realName
+    let queryParams = [inviteCode]
     connection.query('select `role` from `codes` where `code` = ?', queryParams, (err, rows) => {
       if (err) {
         res.json({
@@ -340,11 +381,11 @@ app.post('/api/register', (req, res) => {
 app.get('/api/user', async (req, res) => {
   if (req.cookies['tracker-id'] !== undefined &&
     req.cookies['tracker-token'] !== undefined) {
-    var Tracker = {
+    let Tracker = {
       id: req.cookies['tracker-id'],
       token: req.cookies['tracker-token']
     }
-    var response = await verifyTracker(Tracker)
+    let response = await verifyTracker(Tracker)
     if (response.ok) {
       res.json({
         ok: true,
