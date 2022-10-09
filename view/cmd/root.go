@@ -10,6 +10,7 @@ import (
 func init() {
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(weekCmd)
+	rootCmd.AddCommand(onlineCmd)
 }
 
 var rootCmd = &cobra.Command{

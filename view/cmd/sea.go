@@ -1,8 +1,11 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -24,6 +27,38 @@ var listCmd = &cobra.Command{
 			fmt.Printf("%-4d  %-16s %-30s %-14s", v.ID, v.Name, v.Email, v.Role)
 			printRune(v.Realname, 18)
 			fmt.Println()
+		}
+	},
+}
+
+var onlineCmd = &cobra.Command{
+	Use:   "online",
+	Short: "show online info",
+	Run: func(cmd *cobra.Command, args []string) {
+		response, err := http.Get("https://check.ixnet.icu/api/userinfo/queryAll")
+		if err != nil {
+			log.Fatal(err)
+		}
+		var onlineInfo database.OnlineInfo
+		data, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = json.Unmarshal(data, &onlineInfo)
+		if err != nil {
+			log.Fatal(err)
+		}
+		mp, err := database.QueryMapUidName()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if len(onlineInfo.Online) == 0 {
+			fmt.Println("lab is empty")
+			return
+		}
+		fmt.Printf("The number of online: %d\n", len(onlineInfo.Online))
+		for _, v := range onlineInfo.Online {
+			fmt.Printf("%s ", mp[v])
 		}
 	},
 }

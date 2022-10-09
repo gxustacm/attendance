@@ -16,3 +16,7 @@ type Statistic struct {
 	End   time.Time
 	Uid   int
 }
+
+type OnlineInfo struct {
+	Online []int `json:"online"`
+}
