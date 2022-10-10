@@ -52,7 +52,7 @@ function App() {
           opacity: 0.5
         }}
       >
-        build #221009@1 {process.env.NODE_ENV === 'development' ? 'development' : 'production' } 
+        build #2210010@0 {process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}
       </div>
       <Box
         className={boxClass}
@@ -60,20 +60,14 @@ function App() {
         <LoadingPage />
       </Box>
       {
-        true && (
-          <>
-            {
-              isLoggedIn ? (
-                <UserPage
-                  setLoading={setLoading}
-                />
-              ) : (
-                <LoginPage
-                  setLogin={setLogin}
-                />
-              )
-            }
-          </>
+        isLoggedIn ? (
+          <UserPage
+            setLoading={setLoading}
+          />
+        ) : (
+          <LoginPage
+            setLogin={setLogin}
+          />
         )
       }
     </>

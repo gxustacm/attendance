@@ -2,6 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { Box, BottomNavigation, BottomNavigationAction, Snackbar, Alert, Typography, Button } from '@mui/material'
 import { Attribution, Restore } from '@mui/icons-material'
+import { motion, AnimatePresence } from 'framer-motion'
 import webSocket from 'socket.io-client'
 import cookie from 'react-cookies'
 import UserInfoPage from './UserInfoPage'
@@ -111,65 +112,104 @@ const UserPage = (props) => {
 
   return (
     <>
-      {
-        page === 0 && <UserInfoPage
-          onlineData={onlineData}
-          user={user}
-        />
-      }
-      {
-        page === 1 && (
-          <Box
-            sx={{
-              position: 'fixed',
-              margin: 'auto',
-              left: '0',
-              right: '0',
-              marginTop: 'calc(50vh - 150px)',
-              textAlign: 'center'
-            }}
-          >
-            {disconnected ? (
-              <>
-                <Typography
-                  variant='h1'
-                  sx={{
-                    color: 'red'
-                  }}
-                >
-                  Disconnected
-                </Typography>
-                <Box
-                  sx={{
-                    padding: '20px 0 0 0'
-                  }}
-                />
-                <Button
-                  variant='outlined'
-                  onClick={handleReconnect}
-                >
-                  重新连接
-                </Button>
-              </>
-            ) : (
-              <>
-                <Typography
-                  variant='h1'
-                >
-                  {format(dura)}
-                </Typography>
-                <Typography
-                  sx={{
-                    color: 'green'
-                  }}
-                >
-                  Online
-                </Typography>
-              </>
-            )}
-          </Box>
-        )
-      }
+      <AnimatePresence
+        mode='wait'
+      >
+        {
+          page === 0 && (
+            <motion.div
+              key='page-0'
+              initial={{
+                opacity: 0,
+                y: '3vh'
+              }}
+              animate={{
+                opacity: 1,
+                y: '0'
+              }}
+              exit={{
+                opacity: 0,
+                y: '-3vh'
+              }}
+            >
+              <UserInfoPage
+                onlineData={onlineData}
+                user={user}
+                disconnected={disconnected}
+              />
+            </motion.div>
+          )
+        }
+        {
+          page === 1 && (
+            <motion.div
+              key='page-1'
+              initial={{
+                opacity: 0,
+                y: '3vh'
+              }}
+              animate={{
+                opacity: 1,
+                y: '0'
+              }}
+              exit={{
+                opacity: 0,
+                y: '-3vh'
+              }}
+            >
+              <Box
+                sx={{
+                  position: 'fixed',
+                  margin: 'auto',
+                  left: '0',
+                  right: '0',
+                  marginTop: 'calc(50vh - 150px)',
+                  textAlign: 'center'
+                }}
+              >
+                {disconnected ? (
+                  <>
+                    <Typography
+                      variant='h1'
+                      sx={{
+                        color: 'red'
+                      }}
+                    >
+                      Disconnected
+                    </Typography>
+                    <Box
+                      sx={{
+                        padding: '20px 0 0 0'
+                      }}
+                    />
+                    <Button
+                      variant='outlined'
+                      onClick={handleReconnect}
+                    >
+                      重新连接
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Typography
+                      variant='h1'
+                    >
+                      {format(dura)}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: 'green'
+                      }}
+                    >
+                      Online
+                    </Typography>
+                  </>
+                )}
+              </Box>
+            </motion.div>
+          )
+        }
+      </AnimatePresence>
       <Box
         sx={{
           position: 'fixed',

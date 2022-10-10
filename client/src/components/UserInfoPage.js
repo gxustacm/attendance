@@ -1,9 +1,44 @@
 import React from "react"
 import { Calendar } from '@nivo/calendar'
-import { Avatar, IconButton, Typography } from "@mui/material"
+import { Avatar, IconButton, Typography, Badge, Button } from "@mui/material"
+import { styled } from '@mui/material/styles'
 
 const UserInfoPage = (props) => {
     const [data, setData] = React.useState([])
+    const [greeting, setGreeting] = React.useState('')
+
+    const OnlineIndicator = styled(Badge)(({ theme }) => ({
+        '& .MuiBadge-badge': {
+            backgroundColor: props.disconnected ? '#ee3333' : '#44b700',
+            color: props.disconnected ? '#ee3333' : '#44b700',
+            boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+            '&::after': {
+                position: 'absolute',
+                top: -2,
+                left: -2,
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                animation: 'ripple 1.5s infinite',
+                border: props.disconnected ? 'none' : '2px solid currentColor',
+                content: '""',
+            },
+        },
+        '@keyframes ripple': {
+            '0%': {
+                transform: 'scale(.5)',
+                opacity: 1
+            },
+            '90%': {
+                transform: 'scale(2.4)',
+                opacity: 0
+            },
+            '100%': {
+                transform: 'scale(2.4)',
+                opacity: 0
+            }
+        }
+    }))
 
     const getTooltip = (toShow) => {
         return (
@@ -15,7 +50,7 @@ const UserInfoPage = (props) => {
                     lineHeight: '10px'
                 }}
             >
-                <div 
+                <div
                     style={{
                         backgroundColor: toShow.color,
                         width: '10px',
@@ -31,10 +66,27 @@ const UserInfoPage = (props) => {
                         verticalAlign: 'middle'
                     }}
                 >
-                    { toShow.day }:&nbsp;{ toShow.value }小时
+                    {toShow.day}:&nbsp;{toShow.value}小时
                 </div>
             </div>
         )
+    }
+
+    const handleReconnect = () => {
+        window.location.reload()
+    }
+
+    const genGreeting = (uname) => {
+        let gret = parseInt(Math.random() * 6)
+        let greetings = [
+            `你好 ${uname},`,
+            `Hello ${uname},`,
+            `こんにちは! ${uname},`,
+            `Bonjour, ${uname},`,
+            `Hallo ${uname},`,
+            `¡Hola! ${uname}`
+        ]
+        return greetings[gret]
     }
 
     React.useEffect(() => {
@@ -46,6 +98,7 @@ const UserInfoPage = (props) => {
             })
         }
         setData(tmp)
+        setGreeting(genGreeting(props.user.uname))
     }, [props.onlineData])
 
     const date = new Date()
@@ -59,30 +112,41 @@ const UserInfoPage = (props) => {
                 marginTop: '100px',
                 lineHeight: '60px'
             }}>
-                <IconButton>
-                    <Avatar
-                        src={`https://ixnet.icu/avatar/${props.user.avatar.toLowerCase()}`}
-                        sx={{ 
-                            width: 72, 
-                            height: 72, 
-                            display: 'inline-block',
-                            verticalAlign: 'middle'
-                        }}
-                    />
+                <IconButton
+                    onClick={() => {
+                        window.open('https://gravatar.com/emails/', '_blank')
+                    }}
+                >
+                    <OnlineIndicator
+                        overlap="circular"
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        variant="dot"
+                    >
+                        <Avatar
+                            src={`https://ixnet.icu/avatar/${props.user.avatar.toLowerCase()}`}
+                            sx={{
+                                width: 72,
+                                height: 72,
+                                display: 'inline-block',
+                                verticalAlign: 'middle'
+                            }}
+                        />
+                    </OnlineIndicator>
                 </IconButton>
                 <Typography
                     variant='h2'
-                    sx={{ 
+                    sx={{
                         display: 'inline-block',
                         verticalAlign: 'middle',
                         margin: '0 20px',
-                        color: '#222'
+                        color: '#222',
+                        textShadow: '5px 5px 3px #eee'
                     }}
                 >
-                    Hello {props.user.uname},
+                    {greeting}
                 </Typography>
             </div>
-            <div 
+            <div
                 style={{
                     margin: '40px',
                     backgroundColor: '#fff',
@@ -107,12 +171,24 @@ const UserInfoPage = (props) => {
                     from={`${date.getFullYear()}-01-01`}
                     to={`${date.getFullYear()}-12-31`}
                     emptyColor="#eeeeee"
-                    colors={['#61cdbb', '#97e3d5', '#e8c1a0', '#f47560']}
+                    colors={['#6aee6a', '#61cd61', '#57b457', '#469b46']}
                     margin={{ top: 0, right: 40, bottom: 0, left: 40 }}
                     monthBorderColor="#ffffff"
                     dayBorderWidth={2}
                     dayBorderColor="#ffffff"
                 />
+            </div>
+            <div>
+                {
+                    props.disconnected && (
+                        <Button
+                            variant='outlined'
+                            onClick={handleReconnect}
+                        >
+                            重新连接
+                        </Button>
+                    )
+                }
             </div>
         </div>
     )
