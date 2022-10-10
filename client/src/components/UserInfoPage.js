@@ -149,13 +149,15 @@ const UserInfoPage = (props) => {
                     backgroundColor: '#fff',
                     boxShadow: '5px 5px 20px 1px #eee',
                     borderRadius: '3px',
-                    padding: '10px 30px 20px 30px'
+                    padding: '10px 30px 20px 30px',
+                    textAlign: 'center'
                 }}
             >
                 <Typography
                     variant='h5'
                     sx={{
-                        margin: '20px 0'
+                        margin: '20px 0',
+                        textAlign: 'left'
                     }}
                 >
                     历史在线

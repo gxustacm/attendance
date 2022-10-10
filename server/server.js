@@ -158,6 +158,9 @@ io.on('connection', (socket) => {
               avatar: encrypt(rows[0].email)
             })
           })
+          connection.query('update `users` set `online` = 1 where `uid` = ?', [uid], err => {
+            if (err) throw err
+          })
           connection.release()
         })
         console.log('[Info] user with uid: ' + uid + ' has connected')
@@ -206,6 +209,9 @@ io.on('connection', (socket) => {
       if (uid !== null) {
         let now = new Date()
         const insertParams = [uid, startTime, now]
+        connection.query('update `users` set `online` = 0 where `uid` = ?', [uid], err => {
+          if (err) throw err
+        })
         if (now - startTime >= 60 * 1000) {
           connection.query('insert into `statistics` (`uid`, `start`, `end`) values (?, ?, ?)', insertParams, (err) => {
             if (err) {
@@ -281,20 +287,6 @@ const setUserList = () => {
     connection.release()
   })
 }
-
-app.get('/api/userinfo/:id', (req, res) => {
-  if (req.params.id === 'queryAll') {
-    let keys = clients.keys()
-    res.json({
-      online: [...keys]
-    })
-  } else {
-    res.json({
-      uid: req.params.id,
-      isOnline: clients.has(parseInt(req.params.id))
-    })
-  }
-})
 
 app.post('/api/login', (req, res) => {
   connectionPool.getConnection((err, connection) => {
