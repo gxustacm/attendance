@@ -187,7 +187,7 @@ io.on('connection', (socket) => {
           }
           for (let key in rows) {
             let date = new Date(rows[key].start)
-            let parsedDate = `${date.getFullYear()}-${format(date.getMonth())}-${format(date.getDate())}`
+            let parsedDate = `${date.getFullYear()}-${format(date.getMonth() + 1)}-${format(date.getDate())}`
             if (parsedDate in tmp) {
               tmp[parsedDate] += ((new Date(rows[key].end)) - date.getTime()) / 1000 / 60 / 60
             } else {
