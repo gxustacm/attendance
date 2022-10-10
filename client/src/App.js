@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Paper, Grid } from '@mui/material'
+import { Box } from '@mui/material'
 
 import requestUserData from './functions/RequestUserData'
 
@@ -14,7 +14,7 @@ function App() {
   const [isLoading, setLoading] = React.useState(true)
   const [requestSent, setReqStat] = React.useState(false)
 
-  const [userInfo, setUserInfo] = React.useState({})
+  // const [userInfo, setUserInfo] = React.useState({})
 
   const boxClass = isLoading ? 'basket' : 'basket hide'
 
@@ -24,7 +24,7 @@ function App() {
       // console.log(stat)
       setLogin(stat)
       if (stat) {
-        setUserInfo(userData)
+        // setUserInfo(userData)
       } else {
         setLoading(false)
       }
@@ -49,10 +49,11 @@ function App() {
           top: '50px',
           right: '50px',
           fontSize: '10px',
-          opacity: 0.5
+          opacity: 0.5,
+          userSelect: 'none'
         }}
       >
-        build #2210010@0 {process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}
+        build #2210010@2 {process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}
       </div>
       <Box
         className={boxClass}

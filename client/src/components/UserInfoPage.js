@@ -72,10 +72,6 @@ const UserInfoPage = (props) => {
         )
     }
 
-    const handleReconnect = () => {
-        window.location.reload()
-    }
-
     const genGreeting = (uname) => {
         let gret = parseInt(Math.random() * 6)
         let greetings = [
@@ -140,7 +136,8 @@ const UserInfoPage = (props) => {
                         verticalAlign: 'middle',
                         margin: '0 20px',
                         color: '#222',
-                        textShadow: '5px 5px 3px #eee'
+                        textShadow: '5px 5px 3px #eee',
+                        userSelect: 'none'
                     }}
                 >
                     {greeting}
@@ -171,7 +168,7 @@ const UserInfoPage = (props) => {
                     from={`${date.getFullYear()}-01-01`}
                     to={`${date.getFullYear()}-12-31`}
                     emptyColor="#eeeeee"
-                    colors={['#6aee6a', '#61cd61', '#57b457', '#469b46']}
+                    colors={['#6aff6a', '#60dd60', '#4fbb4f', '#419941' ,'#307730']}
                     margin={{ top: 0, right: 40, bottom: 0, left: 40 }}
                     monthBorderColor="#ffffff"
                     dayBorderWidth={2}
@@ -183,7 +180,7 @@ const UserInfoPage = (props) => {
                     props.disconnected && (
                         <Button
                             variant='outlined'
-                            onClick={handleReconnect}
+                            onClick={props.handleReconnect}
                         >
                             重新连接
                         </Button>

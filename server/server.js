@@ -7,6 +7,7 @@ import crypto from 'crypto'
 import bodyParser from 'body-parser'
 import compression from 'compression'
 import { Server } from 'socket.io'
+import redis from 'socket.io-redis'
 import http from 'http'
 import mailin from 'mailin'
 
@@ -18,7 +19,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 app.use(bodyParser.json({ extended: 'true' }))
 const server = http.createServer(app)
-const io = new Server(server, { cors: true })
+const io = new Server(server, { cors: true, transports: [ 'websocket', 'polling' ] })
+io.adapter(redis({ host: 'localhost', port: 6379 })) 
 
 let userList = {}
 

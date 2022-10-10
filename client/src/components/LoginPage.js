@@ -15,9 +15,9 @@ const LoginPage = (hooks) => {
 
   const connectWs = () => {
     if (process.env.NODE_ENV === 'development')
-      setWs(webSocket('https://check.ixnet.icu/'))
+      setWs(webSocket('https://check.ixnet.icu/', { transports: ['websocket', 'polling'] }))
     else
-      setWs(webSocket('/'))
+      setWs(webSocket('/', { transports: ['websocket', 'polling'] }))
   }
 
   const initWebSocket = () => {
@@ -33,8 +33,7 @@ const LoginPage = (hooks) => {
         if (name.trim().length > 3) {
           setRegReady(true)
         }
-        else
-        {
+        else {
           setRegReady(false)
         }
         setAvatar('')
@@ -60,12 +59,10 @@ const LoginPage = (hooks) => {
 
   const getUserAvatar = () => {
     var name = document.getElementById('user').value
-    if (name.trim() !== '')
-    {
+    if (name.trim() !== '') {
       ws.emit('getUser', name)
     }
-    else
-    {
+    else {
       setRegReady(false)
       setAvatar('')
     }
@@ -176,7 +173,7 @@ const LoginPage = (hooks) => {
             padding: '10px 40px 10px 40px'
           }}
         >
-          <TextField 
+          <TextField
             fullWidth
             id='user'
             label='用户名'
@@ -192,7 +189,7 @@ const LoginPage = (hooks) => {
               padding: '10px 40px 10px 40px'
             }}
           >
-            <TextField 
+            <TextField
               fullWidth
               id='pwd'
               type='password'
@@ -220,7 +217,7 @@ const LoginPage = (hooks) => {
               padding: '10px 40px 10px 40px'
             }}
           >
-            <TextField 
+            <TextField
               fullWidth
               id='realName'
               label='姓名'
@@ -231,7 +228,7 @@ const LoginPage = (hooks) => {
               padding: '10px 40px 10px 40px'
             }}
           >
-            <TextField 
+            <TextField
               fullWidth
               id='pwdReg'
               type='password'
@@ -243,7 +240,7 @@ const LoginPage = (hooks) => {
               padding: '10px 40px 10px 40px'
             }}
           >
-            <TextField 
+            <TextField
               fullWidth
               id='pwdRepeat'
               type='password'
@@ -255,7 +252,7 @@ const LoginPage = (hooks) => {
               padding: '10px 40px 10px 40px'
             }}
           >
-            <TextField 
+            <TextField
               fullWidth
               id='inviteCode'
               label='邀请码'
@@ -270,7 +267,7 @@ const LoginPage = (hooks) => {
               padding: '10px 40px 10px 40px'
             }}
           >
-            <TextField 
+            <TextField
               id='email'
               disabled
               fullWidth
@@ -298,8 +295,7 @@ const LoginPage = (hooks) => {
                   if (pwd !== pwdRepeat) {
                     alert('password doesn\'t match')
                   }
-                  else
-                  {
+                  else {
                     ws.emit('check invite code', inviteCode)
                   }
                 }
@@ -348,7 +344,7 @@ const LoginPage = (hooks) => {
             <CircularProgress />
           </Box>
         </Collapse>
-        <Box 
+        <Box
           sx={{
             padding: '10px 20px 0 10px'
           }}

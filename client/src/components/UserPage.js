@@ -23,11 +23,13 @@ const UserPage = (props) => {
     uname: ''
   })
 
+  const timer = React.useRef(null)
+
   const connectWs = () => {
     if (process.env.NODE_ENV === 'development')
-      setWs(webSocket('https://check.ixnet.icu/'))
+      setWs(webSocket('https://check.ixnet.icu/', { transports: ['websocket', 'polling'] }))
     else
-      setWs(webSocket('/'))
+      setWs(webSocket('/', { transports: ['websocket', 'polling'] }))
   }
 
   const date = new Date()
@@ -37,12 +39,15 @@ const UserPage = (props) => {
     ws.on('stat', msg => {
       if (msg === 'success') {
         setMsg(true)
+        setDisconnected(false)
         const timeStart = Date.parse(new Date())
         ws.emit('queryOnlineData', { year: date.getFullYear() })
-        setInterval(() => {
+        let intervalId = setInterval(() => {
           setDura(parseInt((Date.parse(new Date()) - timeStart) / 1000))
         }, 1000)
+        timer.current = { id: intervalId }
       }
+
       if (msg === 'duplicated') {
         setMsg(true)
         setDuplicated(true)
@@ -60,6 +65,7 @@ const UserPage = (props) => {
     })
 
     ws.on('disconnect', () => {
+      clearInterval(timer.current.id)
       setDisconnected(true)
       setDisconnectMsg(true)
       if (Notification.permission === "granted") {
@@ -71,6 +77,8 @@ const UserPage = (props) => {
           }
         })
       }
+      ws.disconnect()
+      setWs(null)
     })
   }
 
@@ -99,7 +107,10 @@ const UserPage = (props) => {
   }
 
   const handleReconnect = () => {
-    window.location.reload()
+    setDuplicated(false)
+    setDura(0)
+    connectWs()
+    // window.location.reload()
   }
 
   const format = (time) => {
@@ -136,6 +147,7 @@ const UserPage = (props) => {
                 onlineData={onlineData}
                 user={user}
                 disconnected={disconnected}
+                handleReconnect={handleReconnect}
               />
             </motion.div>
           )
