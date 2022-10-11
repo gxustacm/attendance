@@ -52,6 +52,7 @@ const UserPage = (props) => {
         setMsg(true)
         setDuplicated(true)
         ws.disconnect()
+        setWs(null)
       }
     })
 
@@ -66,17 +67,17 @@ const UserPage = (props) => {
 
     ws.on('disconnect', () => {
       clearInterval(timer.current.id)
-      setDisconnected(true)
       setDisconnectMsg(true)
       if (Notification.permission === "granted") {
-        let notification = new Notification("连接已断开...")
+        new Notification("连接已断开...")
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(permission => {
           if (permission === "granted") {
-            let notification = new Notification("已接受消息通知")
+            new Notification("已接受消息通知")
           }
         })
       }
+      setDisconnected(true)
       ws.disconnect()
       setWs(null)
     })
@@ -107,6 +108,7 @@ const UserPage = (props) => {
   }
 
   const handleReconnect = () => {
+    setDisconnectMsg(false)
     setDuplicated(false)
     setDura(0)
     connectWs()

@@ -137,7 +137,8 @@ const UserInfoPage = (props) => {
                         margin: '0 20px',
                         color: '#222',
                         textShadow: '5px 5px 3px #eee',
-                        userSelect: 'none'
+                        userSelect: 'none',
+                        fontWeight: '400'
                     }}
                 >
                     {greeting}

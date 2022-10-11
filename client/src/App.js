@@ -31,16 +31,6 @@ function App() {
     })
   }
 
-  if (Notification.permission === "granted") {
-    // var notification = new Notification("Hi there!")
-  } else if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(permission => {
-      if (permission === "granted") {
-        let notification = new Notification("已接受消息通知")
-      }
-    })
-  }
-
   return (
     <>
       <div
