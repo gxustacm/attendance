@@ -10,6 +10,7 @@ import { Server } from 'socket.io'
 import redis from 'socket.io-redis'
 import http from 'http'
 import mailin from 'mailin'
+import { truncate } from 'fs/promises'
 
 dotenv.config()
 const app = express()
@@ -254,28 +255,6 @@ const connectionPool = mysql.createPool({
   database: process.env.SQL_NAME
 })
 
-/*
-const connection = mysql.createConnection({
-  host: process.env.SQL_HOST,
-  user: process.env.SQL_USER,
-  password: process.env.SQL_PWD,
-  database: process.env.SQL_NAME
-})
-
-connection.connect((err) => {
-  if (err) {
-    console.log('\x1B[31m[Erro] \x1B[0m%s', err.code)
-    console.log('[Info] Program will be exit, please check the DB configuration')
-    process.exit(0)
-  }
-
-  else {
-    console.log('[Info] DB Connection Established')
-    setUserList()
-  }
-})
-*/
-
 const setUserList = () => {
   connectionPool.getConnection((err, connection) => {
     if (err) throw err
@@ -320,6 +299,34 @@ app.post('/api/login', (req, res) => {
     })
     connection.release()
   })
+})
+
+app.post('/api/check', (req, res) => {
+  if (req.cookies['tracker-id'] !== undefined &&
+  req.cookies['tracker-token'] !== undefined) {
+    verifyTracker({
+      id: req.cookies['tracker-id'],
+      token: req.cookies['tracker-token']
+    }).then(val => {
+      if (val.ok) {
+        // @TODO: 添加签到签退逻辑
+
+        res.json({
+          ok: true
+        })
+      } else {
+        res.json({
+          ok: false,
+          msg: 'not logged in'
+        })
+      }
+    })
+  } else {
+    res.json({
+      ok: false,
+      msg: 'not logged in'
+    })
+  }
 })
 
 app.post('/api/register', (req, res) => {
